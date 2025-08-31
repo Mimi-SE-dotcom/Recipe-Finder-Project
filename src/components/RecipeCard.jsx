@@ -1,33 +1,29 @@
 import { Link } from "react-router-dom";
-export default function RecipeCard({ meal }) {
+
+function RecipeCard({ recipe }) {
   return (
-    <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow overflow-hidden">
-      {/* Image */}
+    <div className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
       <img
-        src={meal.strMealThumb}
-        alt={meal.strMeal}
+        src={recipe.strMealThumb}
+        alt={recipe.strMeal}
         className="w-full h-48 object-cover"
       />
-
-      {/* Content */}
       <div className="p-4">
-        <h2 className="text-lg font-semibold mb-2 line-clamp-1">{meal.strMeal}</h2>
-
-        {/* Short description */}
-        {meal.strInstructions && (
-          <p className="text-gray-600 text-sm mb-3 line-clamp-3">
-            {meal.strInstructions}
-          </p>
-        )}
-
-        {/* Details button */}
+        <h3 className="text-lg font-semibold text-gray-800 line-clamp-1">
+          {recipe.strMeal}
+        </h3>
+        <p className="text-sm text-gray-600 line-clamp-2">
+          {recipe?.strInstructions || "No description available."}
+        </p>
         <Link
-          to={`/recipe/${meal.idMeal}`}
-          className="inline-block px-4 py-2 bg-blue-500 text-white text-sm rounded-lg hover:bg-blue-600 transition-colors"
+          to={`/recipe/${recipe.idMeal}`}
+          className="text-blue-500 hover:underline mt-2 inline-block"
         >
-          View Recipe
+          View Recipe →
         </Link>
       </div>
     </div>
   );
 }
+
+export default RecipeCard;
