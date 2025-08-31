@@ -1,31 +1,36 @@
 import { useState } from "react";
+import { Search } from "lucide-react"; // icon library
 
-export default function SearchBar({ onSearch, initialQuery = "" }) {
-  const [value, setValue] = useState(initialQuery);
+export default function SearchBar({ onSearch }) {
+  const [query, setQuery] = useState("");
 
-  const submit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    onSearch(value);
+    if (query.trim()) {
+      onSearch(query);
+    }
   };
 
   return (
     <form
-      onSubmit={submit}
-      className="flex w-full max-w-3xl mx-auto gap-2"
-      aria-label="Search recipes by name"
+      onSubmit={handleSubmit}
+      className="flex w-full max-w-md bg-white rounded-full shadow-md overflow-hidden"
     >
+      {/* Input */}
       <input
         type="text"
-        placeholder="Search for recipes (e.g., Arrabiata)"
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-        className="flex-1 rounded-md border px-4 py-3 outline-none focus:ring focus:ring-indigo-200"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        placeholder="Search recipes..."
+        className="flex-1 px-4 py-2 outline-none text-gray-700"
       />
+
+      {/* Button */}
       <button
         type="submit"
-        className="shrink-0 rounded-md bg-indigo-600 px-5 py-3 font-medium text-white hover:bg-indigo-700"
+        className="px-4 bg-blue-500 hover:bg-blue-600 text-white flex items-center justify-center"
       >
-        Search
+        <Search className="w-5 h-5" />
       </button>
     </form>
   );

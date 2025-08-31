@@ -1,91 +1,63 @@
 import { useEffect, useState } from "react";
-import SearchBar from "./SearchBar";
-import RecipeCard from "./RecipeCard";
-import { searchMealsByName, searchMealsByIngredient } from "./services/api";
+import SearchBar from "../components/SearchBar";
+import RecipeCard from "../components/RecipeCard";
+import { searchMealsByName, searchMealsByIngredient } from "../services/api";
 
-export default function RecipeSearch() {
-  const [query, setQuery] = useState("");
-  const [mode, setMode] = useState("name");
+export default function Home() {
   const [meals, setMeals] = useState([]);
-  const [status, setStatus] = useState("idle");
-  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [searchType, setSearchType] = useState("name"); // "name" or "ingredient"
 
-  const runSearch = async (trimmed, m = mode) => {
+  const handleSearch = async (query) => {
+    setLoading(true);
     try {
-      setStatus("loading");
-      let data = [];
-
-      if (m === "name") {
-        data = await searchMealsByName(trimmed);
-      } else {
-        data = await searchMealsByIngredient(trimmed);
-      }
-
-      if (!data || data.length === 0) {
-        setMeals([]);
-        setStatus("empty");
-      } else {
-        setMeals(data);
-        setStatus("success");
-      }
-    } catch (err) {
+      const results =
+        searchType === "name"
+          ? await searchMealsByName(query)
+          : await searchMealsByIngredient(query);
+      setMeals(results || []);
+    } catch (error) {
+      console.error(error);
       setMeals([]);
-      setStatus("error");
-      setError(err?.message || "Something went wrong");
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (query) runSearch(query, mode);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // load a default recipe
+    handleSearch("Arrabiata");
   }, []);
 
   return (
-    <div>
-      <SearchBar
-        initialQuery={query}
-        mode={mode}
-        onModeChange={(m) => setMode(m)}
-        onSearch={(q) => {
-          setQuery(q);
-          runSearch(q);
-        }}
-      />
+    <div className="container mx-auto px-4 py-8">
+      {/* Search bar */}
+      <div className="flex flex-col md:flex-row gap-4 items-center mb-8">
+        <SearchBar onSearch={handleSearch} />
 
-      {/* States */}
-      <div className="mt-6">
-        {status === "loading" && (
-          <p className="text-gray-700">
-            Searching for “{query}” by {mode}…
-          </p>
-        )}
-        {status === "error" && (
-          <p className="text-red-600">
-            Couldn’t load recipes. {error}. Please try again.
-          </p>
-        )}
-        {status === "empty" && (
-          <p className="text-gray-700">
-            No recipes found for “{query}”. Try another {mode}.
-          </p>
-        )}
-        {status === "idle" && (
-          <p className="text-gray-700">
-            Start by typing a dish name or ingredient above.
-          </p>
-        )}
+        {/* Toggle search type */}
+        <select
+          value={searchType}
+          onChange={(e) => setSearchType(e.target.value)}
+          className="px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="name">Search by Name</option>
+          <option value="ingredient">Search by Ingredient</option>
+        </select>
       </div>
 
-      {/* Grid */}
-      {status === "success" && (
-        <section
-          aria-label="Search results"
-          className="grid gap-6 mt-6 sm:grid-cols-2 lg:grid-cols-3"
-        >
+      {/* Loading state */}
+      {loading && <p className="text-center text-gray-600">Loading recipes...</p>}
+
+      {/* Recipes grid */}
+      {!loading && meals.length > 0 ? (
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {meals.map((meal) => (
             <RecipeCard key={meal.idMeal} meal={meal} />
           ))}
-        </section>
+        </div>
+      ) : (
+        !loading && <p className="text-center text-gray-500">No recipes found.</p>
       )}
     </div>
   );

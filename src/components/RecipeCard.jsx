@@ -1,24 +1,33 @@
+import { Link } from "react-router-dom";
 export default function RecipeCard({ meal }) {
-  const { strMealThumb, strMeal, strCategory, strArea } = meal;
-
   return (
-    <article className="rounded-lg border shadow-sm overflow-hidden bg-white">
+    <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow overflow-hidden">
+      {/* Image */}
       <img
-        src={strMealThumb}
-        alt={strMeal}
-        className="h-44 w-full object-cover"
-        loading="lazy"
+        src={meal.strMealThumb}
+        alt={meal.strMeal}
+        className="w-full h-48 object-cover"
       />
+
+      {/* Content */}
       <div className="p-4">
-        <h3 className="text-lg font-semibold line-clamp-1">{strMeal}</h3>
-        <p className="text-sm text-gray-600 mt-1">
-          <span className="font-medium">Category:</span> {strCategory || "—"}
-          {" · "}
-          <span className="font-medium">Cuisine:</span> {strArea || "—"}
-        </p>
-        {/* Hook up navigation later to a details page */}
-        {/* <Link to={`/recipe/${meal.idMeal}`} className="mt-3 inline-block text-indigo-600 hover:underline">View details</Link> */}
+        <h2 className="text-lg font-semibold mb-2 line-clamp-1">{meal.strMeal}</h2>
+
+        {/* Short description */}
+        {meal.strInstructions && (
+          <p className="text-gray-600 text-sm mb-3 line-clamp-3">
+            {meal.strInstructions}
+          </p>
+        )}
+
+        {/* Details button */}
+        <Link
+          to={`/recipe/${meal.idMeal}`}
+          className="inline-block px-4 py-2 bg-blue-500 text-white text-sm rounded-lg hover:bg-blue-600 transition-colors"
+        >
+          View Recipe
+        </Link>
       </div>
-    </article>
+    </div>
   );
 }
