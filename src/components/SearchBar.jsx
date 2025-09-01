@@ -22,7 +22,7 @@ export default function SearchBar({ onSearch }) {
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder="Search recipes..."
-        className="flex-1 px-4 py-2 outline-none text-gray-700"
+        className="flex-1 px-4 py-2 outline-none text-gray-700 text-center"
       />
 
       {/* Button */}

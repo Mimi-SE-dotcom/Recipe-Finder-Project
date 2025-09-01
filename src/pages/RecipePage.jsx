@@ -23,7 +23,7 @@ export default function RecipeDetails({ meal, status, error }) {
         <img
           src={meal.strMealThumb}
           alt={meal.strMeal}
-          className="w-full rounded-xl border"
+          className="w-40 h-32 object-cover rounded-lg mx-auto"
         />
         <div className="mt-4 text-sm text-gray-600 space-y-1">
           <p><span className="font-medium">Category:</span> {meal.strCategory || "—"}</p>
